@@ -1,0 +1,82 @@
+package gnum
+
+import (
+	"fmt"
+	"github.com/joelboim/gnum/infra"
+	"strings"
+)
+
+type ConfigOption func(*Config)
+
+type Config struct {
+	nameToValue                map[string]int
+	caseInsensitiveNameToValue map[string]int
+	valueToName                map[int]string
+	sortedNames                []string
+	sortedValues               []int
+	allEnumsString             string
+	stringCallback             func(value string) string
+	parseNormalizationCallback func(value string) string
+	parseCaseInsensitive       bool
+}
+
+func NewConfig[T ~int](nameToValue map[string]T, options ...ConfigOption) *Config {
+	config := &Config{
+		make(map[string]int),
+		make(map[string]int),
+		make(map[int]string),
+		make([]string, 0, len(nameToValue)),
+		make([]int, 0),
+		"",
+		func(value string) string { return value },
+		func(value string) string { return value },
+		false,
+	}
+
+	for _, option := range options {
+		option(config)
+	}
+
+	for name, value := range nameToValue {
+		valueConverted := int(value)
+		nameConverted := config.stringCallback(name)
+
+		config.nameToValue[name] = valueConverted
+
+		if duplicateName, ok := config.valueToName[valueConverted]; ok {
+			panic(fmt.Sprintf("`%s` and `%s` have the same value", duplicateName, name))
+		}
+
+		config.valueToName[valueConverted] = nameConverted
+		insertedSortedIndex := infra.InsertToSortedSlice(
+			&config.sortedValues,
+			valueConverted)
+		infra.InsertToSliceByIndex(
+			&config.sortedNames,
+			name,
+			uint64(insertedSortedIndex))
+		config.caseInsensitiveNameToValue[strings.ToLower(name)] = valueConverted
+	}
+
+	config.allEnumsString = strings.Join(config.sortedNames, ", ")
+
+	return config
+}
+
+func OptionStringCallback(callback func(value string) string) func(c *Config) {
+	return func(c *Config) {
+		c.stringCallback = callback
+	}
+}
+
+func OptionParseCaseInsensitive(caseInsensitive bool) func(c *Config) {
+	return func(c *Config) {
+		c.parseCaseInsensitive = caseInsensitive
+	}
+}
+
+func OptionParseNormalizationCallback(callback func(value string) string) func(c *Config) {
+	return func(c *Config) {
+		c.parseNormalizationCallback = callback
+	}
+}
