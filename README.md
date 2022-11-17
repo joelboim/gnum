@@ -12,7 +12,7 @@ Enum for GO, **without** code generation works with **const**s.
 * You don't need code generation to get the full capabilities of enums.
 * You can assign it as a const.
 * It's fast.
-* You can parse an Enum without knowing it's type. <sup>instead of`ParseAnimal()` you could use `Parse()`</sup>
+* You can use generics for processing any Enum.
 
 ## Benchmarks:dash:
 
