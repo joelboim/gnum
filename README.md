@@ -11,7 +11,7 @@ Enum for GO, **without** code generation works with **const**s.
 ## Y Use gnum:grey_question:
 
 * You don't need code generation.
-* You can assign it as a const.
+* You can assign it to const.
 * It's fast.
 * You can use generics for processing any Enum.
 
