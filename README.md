@@ -79,3 +79,18 @@ func main() {
 }
 ```
 
+Can be also used in a generic context:
+
+```go
+func foo[T gnum.Enumer[T]](enum T) {
+	fmt.Println(
+		enum.Names(),
+		enum.Type())
+}
+
+func main() {
+	foo(Dog) // [dog cat cow] animal
+	foo(Red) // [red Blue GREEN] color
+}
+```
+

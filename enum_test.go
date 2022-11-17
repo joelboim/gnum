@@ -128,6 +128,20 @@ func TestReceiverUnmarshalText_OnDefaultConfig_ThenReturnName(t *testing.T) {
 	assert.Equal(t, dog, *actualEnum)
 }
 
+func TestReceiverUnmarshalText_OnMarshelText_ThenReturnEnum(t *testing.T) {
+	// Arrange
+	enumMarsheled, err := dog.MarshalText()
+	require.NoError(t, err)
+	actualEnum := new(testAnimal)
+
+	// Act
+	err = actualEnum.UnmarshalText(enumMarsheled)
+	require.NoError(t, err)
+
+	// Assert
+	assert.Equal(t, dog, *actualEnum)
+}
+
 func TestReceiverUnmarshalText_OnInvalidEnum_ThenReturnError(t *testing.T) {
 	// Arrange
 	actualEnum := new(testAnimal)

@@ -24,9 +24,6 @@ var testColorConfig = NewConfig(
 		"BlueSuffix":   blue,
 		"YellowSuffix": yellow,
 		"GreenSuffix":  green},
-	OptionStringCallback(func(value string) string {
-		return "Prefix" + value
-	}),
 	OptionParseNormalizationCallback(func(value string) string {
 		return value + "Suffix"
 	}))
@@ -69,7 +66,7 @@ func TestReceiverString_OnCustomConfig_ThenReturnName(t *testing.T) {
 	actualName := red.String()
 
 	// Assert
-	assert.Equal(t, "PrefixRedSuffix", actualName)
+	assert.Equal(t, "RedSuffix", actualName)
 }
 
 func TestReceiverNames_OnCustomConfigAndMultipleEnums_ThenReturnDifferentNames(t *testing.T) {
@@ -159,7 +156,7 @@ func TestReceiverMarshalText_OnCustomConfig_ThenReturnName(t *testing.T) {
 	require.NoError(t, err)
 
 	// Assert
-	assert.Equal(t, []byte("PrefixRedSuffix"), actualTextBytes)
+	assert.Equal(t, []byte("RedSuffix"), actualTextBytes)
 }
 
 func TestReceiverMarshalText_OnCustomConfigAndJsonMarshal_ThenReturnJsonEncoded(t *testing.T) {
@@ -169,7 +166,7 @@ func TestReceiverMarshalText_OnCustomConfigAndJsonMarshal_ThenReturnJsonEncoded(
 	require.NoError(t, err)
 
 	// Assert
-	assert.Equal(t, []byte("\"PrefixRedSuffix\""), actualJsonBytes)
+	assert.Equal(t, []byte("\"RedSuffix\""), actualJsonBytes)
 }
 
 func TestReceiverConfig_OnCustomConfig_ThenReturnOnCustomConfig(t *testing.T) {

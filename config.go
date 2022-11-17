@@ -6,8 +6,6 @@ import (
 	"strings"
 )
 
-type ConfigOption func(*Config)
-
 type Config struct {
 	nameToValue                map[string]int
 	caseInsensitiveNameToValue map[string]int
@@ -20,6 +18,11 @@ type Config struct {
 	parseCaseInsensitive       bool
 }
 
+type ConfigOption func(*Config)
+
+// NewConfig return a new *Config instance with all of its private fields populated based on the provided nameToValue
+// and all the options applied to it.
+// e.g. NewConfig(map[string]Color{"red": Red}, OptionParseCaseInsensitive(true))
 func NewConfig[T ~int](nameToValue map[string]T, options ...ConfigOption) *Config {
 	config := &Config{
 		make(map[string]int),
@@ -63,18 +66,15 @@ func NewConfig[T ~int](nameToValue map[string]T, options ...ConfigOption) *Confi
 	return config
 }
 
-func OptionStringCallback(callback func(value string) string) func(c *Config) {
-	return func(c *Config) {
-		c.stringCallback = callback
-	}
-}
-
+// OptionParseCaseInsensitive - is set to true, Enum.Parse and Enum.UnmarshalText respectively,
+// will ignore the input case when parsing.
 func OptionParseCaseInsensitive(caseInsensitive bool) func(c *Config) {
 	return func(c *Config) {
 		c.parseCaseInsensitive = caseInsensitive
 	}
 }
 
+// OptionParseNormalizationCallback will be applied for each Enum.Parse call and Enum.UnmarshalText respectively.
 func OptionParseNormalizationCallback(callback func(value string) string) func(c *Config) {
 	return func(c *Config) {
 		c.parseNormalizationCallback = callback
