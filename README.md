@@ -19,7 +19,7 @@ Enum for GO, **without** code generation works with **const**s.
 | name   \     time/op | gnum        | go-enum      | enumer       |
 |----------------------|-------------|--------------|--------------|
 | Parse                | 1.92µs ± 6% | 1.82µs ±16%  |              |
-| ParseCaseInsensitive | 1.60µs      | 1.67µs ±10%  | 1.39µs ± 2%  |
+| ParseCaseInsensitive | 1.60µs ± 7% | 1.67µs ±10%  | 1.39µs ± 2%  |
 | String               | 11.4ns ± 9% | 52.9ns ±14%  | 52.2ns ±11%  |
 | Names                | 96.4ns ± 7% | 172.7ns ±17% | 167.3ns ± 6% |
 | MarshalText          | 84.2ns ± 3% | 75.0ns ±13%  | 17.9ns ±11%  |
