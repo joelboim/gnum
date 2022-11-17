@@ -4,6 +4,7 @@
 ![Test](https://github.com/joelboim/gnum/actions/workflows/test.yml/badge.svg)
 ![go version](https://img.shields.io/badge/go-%3E%3D18-blue)
 [![Go Reference](https://pkg.go.dev/badge/github.com/joelboim/gnum.svg)](https://pkg.go.dev/github.com/joelboim/gnum)
+[![GoReportCard](https://goreportcard.com/badge/github.com/joelboim/gnum)](https://goreportcard.com/report/github.com/joelboim/gnum)
 
 Enum for GO, **without** code generation works with **const**s.
 
