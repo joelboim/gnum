@@ -153,6 +153,15 @@ func TestReceiverUnmarshalText_OnJsonUnmarshal_ThenReturnStructWithEnum(t *testi
 	assert.Equal(t, &struct{ Animal testAnimal }{dog}, actual)
 }
 
+func TestReceiverType_OnEnumWithUnderlineNamedType_ThenReturnTypeName(t *testing.T) {
+	// Arrange
+	// Act
+	actualType := dog.Type()
+
+	// Assert
+	assert.Equal(t, "animal", actualType)
+}
+
 func TestNames_OnMultipleEnums_ThenReturnDifferentNames(t *testing.T) {
 	// Arrange
 	// Act
@@ -188,4 +197,13 @@ func TestEnums_OnMultipleEnums_ThenReturnAll(t *testing.T) {
 
 	// Assert
 	assert.Equal(t, []testAnimal{chicken, dog, cat, cow}, actualEnums)
+}
+
+func TestType_OnEnumWithUnderlineNamedType_ThenReturnTypeName(t *testing.T) {
+	// Arrange
+	// Act
+	actualType := Type[testAnimal]()
+
+	// Assert
+	assert.Equal(t, "animal", actualType)
 }

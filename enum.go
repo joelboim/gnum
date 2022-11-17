@@ -2,6 +2,7 @@ package gnum
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 )
 
@@ -12,10 +13,7 @@ type Enumer[T ~int] interface {
 	Parse(name string) (T, error)
 	String() string
 	Config() *Config
-}
-
-func Enums[T Enumer[T]]() []T {
-	return T.Enums(-1)
+	Type() string
 }
 
 type enumConfig[T ~int] interface {
@@ -25,8 +23,16 @@ type enumConfig[T ~int] interface {
 
 type Enum[T enumConfig[T]] int
 
+func Enums[T Enumer[T]]() []T {
+	return T.Enums(-1)
+}
+
 func Names[T Enumer[T]]() []string {
 	return T.Names(-1)
+}
+
+func Type[T Enumer[T]]() string {
+	return T.Type(-1)
 }
 
 func Parse[T Enumer[T]](name string) (T, error) {
@@ -100,4 +106,8 @@ func (e Enum[T]) String() string {
 
 func (e Enum[T]) Config() *Config {
 	return T.Config(-1)
+}
+
+func (e Enum[T]) Type() string {
+	return reflect.TypeOf(*new(T)).Name()
 }
