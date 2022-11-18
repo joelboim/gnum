@@ -55,8 +55,8 @@ const (
 var config = gnum.NewConfig(
 	map[string]Color{
 		"red":   Red,
-		"blue":  Blue,
-		"green": Green,
+		"Blue":  Blue,
+		"GREEN": Green,
 	})
 
 func (color) Config() *gnum.Config { return config }
