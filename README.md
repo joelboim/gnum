@@ -7,8 +7,6 @@
 ![Fancy logo](docs/dark.png#gh-dark-mode-only)
 ![Fancy logo](docs/light.png#gh-light-mode-only)
 
-Enum for GO. **without** code generation. works with **const**s.
-
 ## Y Use gnum:grey_question:
 
 * You don't need code generation.
