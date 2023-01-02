@@ -24,8 +24,11 @@ var testColorConfig = NewConfig(
 		"BlueSuffix":   blue,
 		"YellowSuffix": yellow,
 		"GreenSuffix":  green},
-	OptionParseNormalizationCallback(func(value string) string {
+	ParseCallback(func(value string) string {
 		return value + "Suffix"
+	}),
+	StringCallback(func(enumName string) string {
+		return "Prefix" + enumName
 	}))
 
 func (color) Config() *Config {
@@ -60,10 +63,28 @@ func TestNewConfig_OnDuplicateEnumValues_ThenPanic(t *testing.T) {
 	})
 }
 
-func TestReceiverString_OnCustomConfig_ThenReturnName(t *testing.T) {
+func TestReceiverString_OnCustomConfig_ThenReturnString(t *testing.T) {
 	// Arrange
 	// Act
-	actualName := red.String()
+	actualString := red.String()
+
+	// Assert
+	assert.Equal(t, "PrefixRedSuffix", actualString)
+}
+
+func TestReceiverStrings_OnCustomConfig_ThenReturnStrings(t *testing.T) {
+	// Arrange
+	// Act
+	actualStrings := red.Strings()
+
+	// Assert
+	assert.Equal(t, []string{"PrefixGreenSuffix", "PrefixRedSuffix", "PrefixBlueSuffix", "PrefixYellowSuffix"}, actualStrings)
+}
+
+func TestReceiverName_OnCustomConfig_ThenReturnName(t *testing.T) {
+	// Arrange
+	// Act
+	actualName := red.Name()
 
 	// Assert
 	assert.Equal(t, "RedSuffix", actualName)
@@ -74,7 +95,7 @@ func TestReceiverNames_OnCustomConfigAndMultipleEnums_ThenReturnDifferentNames(t
 	// Act
 	actualNames := red.Names()
 
-	// AssertRedSuffix
+	// Assert
 	assert.Equal(t, []string{"GreenSuffix", "RedSuffix", "BlueSuffix", "YellowSuffix"}, actualNames)
 }
 
@@ -97,7 +118,7 @@ func TestReceiverParse_OnCustomConfigAndNonExistingEnumName_ThenReturnError(t *t
 	assert.Error(t, err)
 }
 
-func TestReceiverParse_OnParseCaseInsensitiveAndExists_ThenReturnEnum(t *testing.T) {
+func TestReceiverParse_OnCaseInsensitiveAndExists_ThenReturnEnum(t *testing.T) {
 	// Arrange
 	defer func(revertedConfig *Config) {
 		testColorConfig = revertedConfig
@@ -109,7 +130,7 @@ func TestReceiverParse_OnParseCaseInsensitiveAndExists_ThenReturnEnum(t *testing
 			"Blue":   blue,
 			"Yellow": yellow,
 			"Green":  green},
-		OptionParseCaseInsensitive(true))
+		CaseInsensitive(true))
 
 	// Act
 	actualEnum, err := red.Parse("BLUE")
@@ -119,7 +140,7 @@ func TestReceiverParse_OnParseCaseInsensitiveAndExists_ThenReturnEnum(t *testing
 	assert.Equal(t, blue, actualEnum)
 }
 
-func TestReceiverParse_OnParseCaseInsensitiveAndMissing_ThenReturnError(t *testing.T) {
+func TestReceiverParse_OnCaseInsensitiveAndMissing_ThenReturnError(t *testing.T) {
 	// Arrange
 	defer func(revertedConfig *Config) {
 		testColorConfig = revertedConfig
@@ -131,7 +152,7 @@ func TestReceiverParse_OnParseCaseInsensitiveAndMissing_ThenReturnError(t *testi
 			"Blue":   blue,
 			"Yellow": yellow,
 			"Green":  green},
-		OptionParseCaseInsensitive(true))
+		CaseInsensitive(true))
 
 	// Act
 	_, err := red.Parse("NOT_COLOR")
@@ -177,41 +198,64 @@ func TestReceiverConfig_OnCustomConfig_ThenReturnOnCustomConfig(t *testing.T) {
 
 	testColorConfig = NewConfig(
 		map[string]testColor{
-			"Red":    red,
-			"Blue":   blue,
-			"Yellow": yellow,
-			"Green":  green},
-		OptionParseCaseInsensitive(true))
+			"PrefixRed":    red,
+			"PrefixBlue":   blue,
+			"PrefixYellow": yellow,
+			"PrefixGreen":  green},
+		CaseInsensitive(true),
+		ParseCallback(func(value string) string {
+			return "Prefix" + value
+		}),
+		StringCallback(func(enumName string) string {
+			return enumName + "Suffix"
+		}))
 
 	// Act
 	actualConfig := red.Config()
-	actualConfig.parseNormalizationCallback = nil
+	actualConfig.parseCallback = nil
 	actualConfig.stringCallback = nil
 
 	// Assert
 	assert.Equal(
 		t,
 		&Config{
-			nameToValue: map[string]int{
-				"Red":    0,
-				"Blue":   1,
-				"Yellow": 2,
-				"Green":  -1},
-			caseInsensitiveNameToValue: map[string]int{
-				"red":    0,
-				"blue":   1,
-				"yellow": 2,
-				"green":  -1},
-			valueToName: map[int]string{
-				0:  "Red",
-				1:  "Blue",
-				2:  "Yellow",
-				-1: "Green"},
-			sortedNames:          []string{"Green", "Red", "Blue", "Yellow"},
-			sortedValues:         []int{-1, 0, 1, 2},
-			allEnumsString:       "Green, Red, Blue, Yellow",
-			parseCaseInsensitive: true},
+			caseInsensitive: true,
+			enumNameLoweredToEnumValue: map[string]int{
+				"prefixred":    0,
+				"prefixblue":   1,
+				"prefixyellow": 2,
+				"prefixgreen":  -1},
+			enumNameToEnumValue: map[string]int{
+				"PrefixRed":    0,
+				"PrefixBlue":   1,
+				"PrefixYellow": 2,
+				"PrefixGreen":  -1},
+			enumValueToEnumName: map[int]string{
+				0:  "PrefixRed",
+				1:  "PrefixBlue",
+				2:  "PrefixYellow",
+				-1: "PrefixGreen",
+			},
+			enumValueToEnumString: map[int]string{
+				0:  "PrefixRedSuffix",
+				1:  "PrefixBlueSuffix",
+				2:  "PrefixYellowSuffix",
+				-1: "PrefixGreenSuffix"},
+			joinedEnumNames:   "PrefixGreen, PrefixRed, PrefixBlue, PrefixYellow",
+			sortedEnumNames:   []string{"PrefixGreen", "PrefixRed", "PrefixBlue", "PrefixYellow"},
+			sortedEnumStrings: []string{"PrefixGreenSuffix", "PrefixRedSuffix", "PrefixBlueSuffix", "PrefixYellowSuffix"},
+			sortedEnumValues:  []int{-1, 0, 1, 2},
+		},
 		actualConfig)
+}
+
+func TestStrings_OnCustomConfigAndMultipleEnums_ThenReturnDifferentStrings(t *testing.T) {
+	// Arrange
+	// Act
+	actualNames := Strings[testColor]()
+
+	// Assert
+	assert.Equal(t, []string{"PrefixGreenSuffix", "PrefixRedSuffix", "PrefixBlueSuffix", "PrefixYellowSuffix"}, actualNames)
 }
 
 func TestNames_OnCustomConfigAndMultipleEnums_ThenReturnDifferentNames(t *testing.T) {
@@ -242,7 +286,7 @@ func TestParse_OnCustomConfigAndNonExistingEnumName_ThenReturnError(t *testing.T
 	assert.Error(t, err)
 }
 
-func TestParse_OnParseCaseInsensitiveAndExists_ThenReturnEnum(t *testing.T) {
+func TestParse_OnCaseInsensitiveAndExists_ThenReturnEnum(t *testing.T) {
 	// Arrange
 	defer func(revertedConfig *Config) {
 		testColorConfig = revertedConfig
@@ -254,7 +298,7 @@ func TestParse_OnParseCaseInsensitiveAndExists_ThenReturnEnum(t *testing.T) {
 			"Blue":   blue,
 			"Yellow": yellow,
 			"Green":  green},
-		OptionParseCaseInsensitive(true))
+		CaseInsensitive(true))
 
 	// Act
 	actualEnum, err := Parse[testColor]("BLUE")
@@ -264,7 +308,7 @@ func TestParse_OnParseCaseInsensitiveAndExists_ThenReturnEnum(t *testing.T) {
 	assert.Equal(t, blue, actualEnum)
 }
 
-func TestParse_OnParseCaseInsensitiveAndMissing_ThenReturnError(t *testing.T) {
+func TestParse_OnCaseInsensitiveAndMissing_ThenReturnError(t *testing.T) {
 	// Arrange
 	defer func(revertedConfig *Config) {
 		testColorConfig = revertedConfig
@@ -276,7 +320,7 @@ func TestParse_OnParseCaseInsensitiveAndMissing_ThenReturnError(t *testing.T) {
 			"Blue":   blue,
 			"Yellow": yellow,
 			"Green":  green},
-		OptionParseCaseInsensitive(true))
+		CaseInsensitive(true))
 
 	// Act
 	_, err := Parse[testColor]("NOT_COLOR")

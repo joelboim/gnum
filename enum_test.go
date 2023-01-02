@@ -30,22 +30,22 @@ func (animal) Config() *Config {
 	return testAnimalConfig
 }
 
-func TestReceiverString_OnDefaultConfig_ThenReturnName(t *testing.T) {
+func TestReceiverString_OnDefaultConfig_ThenReturnString(t *testing.T) {
 	// Arrange
 	// Act
-	actualName := dog.String()
+	actualString := dog.String()
 
 	// Assert
-	assert.Equal(t, "Dog", actualName)
+	assert.Equal(t, "Dog", actualString)
 }
 
 func TestReceiverString_OnDifferentEnum_ThenReturnDifferentName(t *testing.T) {
 	// Arrange
 	// Act
-	actualName := cow.String()
+	actualString := cow.String()
 
 	// Assert
-	assert.Equal(t, "Cow", actualName)
+	assert.Equal(t, "Cow", actualString)
 }
 
 func TestReceiverString_OnEnumNotRegisteredInConfig_ThenPanic(t *testing.T) {
@@ -57,6 +57,24 @@ func TestReceiverString_OnEnumNotRegisteredInConfig_ThenPanic(t *testing.T) {
 	assert.Panics(t, func() {
 		_ = notRegisteredEnum.String()
 	})
+}
+
+func TestReceiverStrings_OnDefaultConfig_ThenReturnStrings(t *testing.T) {
+	// Arrange
+	// Act
+	actualStrings := dog.Strings()
+
+	// Assert
+	assert.Equal(t, []string{"Chic\tken", "Dog", "Cat", "Cow"}, actualStrings)
+}
+
+func TestReceiverName_OnDefaultConfig_ThenReturnName(t *testing.T) {
+	// Arrange
+	// Act
+	actualString := dog.Name()
+
+	// Assert
+	assert.Equal(t, "Dog", actualString)
 }
 
 func TestReceiverNames_OnMultipleEnums_ThenReturnDifferentNames(t *testing.T) {
@@ -171,52 +189,6 @@ func TestReceiverType_OnEnumWithUnderlineNamedType_ThenReturnTypeName(t *testing
 	// Arrange
 	// Act
 	actualType := dog.Type()
-
-	// Assert
-	assert.Equal(t, "animal", actualType)
-}
-
-func TestNames_OnMultipleEnums_ThenReturnDifferentNames(t *testing.T) {
-	// Arrange
-	// Act
-	actualNames := Names[testAnimal]()
-
-	// Assert
-	assert.Equal(t, []string{"Chic\tken", "Dog", "Cat", "Cow"}, actualNames)
-}
-
-func TestParse_OnExistingEnumName_ThenReturnEnum(t *testing.T) {
-	// Arrange
-	// Act
-	actualEnum, err := Parse[testAnimal]("Cat")
-	require.NoError(t, err)
-
-	// Assert
-	assert.Equal(t, cat, actualEnum)
-}
-
-func TestParse_OnNonExistingEnumName_ThenReturnError(t *testing.T) {
-	// Arrange
-	// Act
-	_, err := Parse[testAnimal]("nop")
-
-	// Assert
-	assert.Error(t, err)
-}
-
-func TestEnums_OnMultipleEnums_ThenReturnAll(t *testing.T) {
-	// Arrange
-	// Act
-	actualEnums := Enums[testAnimal]()
-
-	// Assert
-	assert.Equal(t, []testAnimal{chicken, dog, cat, cow}, actualEnums)
-}
-
-func TestType_OnEnumWithUnderlineNamedType_ThenReturnTypeName(t *testing.T) {
-	// Arrange
-	// Act
-	actualType := Type[testAnimal]()
 
 	// Assert
 	assert.Equal(t, "animal", actualType)

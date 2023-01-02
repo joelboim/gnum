@@ -19,7 +19,7 @@ func InsertToSliceByIndex[T constraints.Ordered](
 	(*values)[index] = value
 }
 
-func InsertToSortedSlice[T constraints.Ordered](values *[]T, value T) int {
+func InsertToSortedSlice[T constraints.Ordered](values *[]T, value T) uint64 {
 	index := sort.Search(
 		len(*values),
 		func(i int) bool { return (*values)[i] >= value })
@@ -28,5 +28,5 @@ func InsertToSortedSlice[T constraints.Ordered](values *[]T, value T) int {
 	copy((*values)[index+1:], (*values)[index:])
 	(*values)[index] = value
 
-	return index
+	return uint64(index)
 }

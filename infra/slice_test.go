@@ -12,7 +12,7 @@ func TestInsertToSortedSlice_OnNegativeNumber_ThenReturnSortedValue(t *testing.T
 
 	// Act
 	insertedIndex := InsertToSortedSlice(&values, -1)
-	require.Equal(t, 0, insertedIndex)
+	require.Equal(t, uint64(0), insertedIndex)
 
 	// Assert
 	assert.Equal(t, []int{-1, 1, 2, 3}, values)
@@ -24,7 +24,7 @@ func TestInsertToSortedSlice_OnPositiveNumber_ThenReturnSortedValue(t *testing.T
 
 	// Act
 	insertedIndex := InsertToSortedSlice(&values, 4)
-	require.Equal(t, 3, insertedIndex)
+	require.Equal(t, uint64(3), insertedIndex)
 
 	// Assert
 	assert.Equal(t, []int{1, 2, 3, 4}, values)
@@ -36,7 +36,7 @@ func TestInsertToSortedSlice_OnFloat_ThenReturnSortedValue(t *testing.T) {
 
 	// Act
 	insertedIndex := InsertToSortedSlice(&values, 1.5)
-	require.Equal(t, 1, insertedIndex)
+	require.Equal(t, uint64(1), insertedIndex)
 
 	// Assert
 	assert.Equal(t, []float64{1, 1.5, 2, 3}, values)
