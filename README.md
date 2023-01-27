@@ -9,21 +9,17 @@
 
 ## Y Use gnum:grey_question:
 
-* You don't need code generation.
-* You can assign it to const.
-* It's fast.
-* You can use generics for processing any Enum.
+* No code generation.
+* Constant.
+* Fast.
+* Can be used as generic T.
+* Concurrency safe.
 
 ## Benchmarks:dash:
 
-| name   \     time/op | gnum        | go-enum      | enumer       |
-|----------------------|-------------|--------------|--------------|
-| Parse                | 1.92µs ± 6% | 1.82µs ±16%  |              |
-| ParseCaseInsensitive | 1.60µs ± 7% | 1.67µs ±10%  | 1.39µs ± 2%  |
-| String               | 11.4ns ± 9% | 52.9ns ±14%  | 52.2ns ±11%  |
-| Names                | 96.4ns ± 7% | 172.7ns ±17% | 167.3ns ± 6% |
-| MarshalText          | 84.2ns ± 3% | 75.0ns ±13%  | 17.9ns ±11%  |
-| Enums                | 94.8ns ±18% |              | 35.5ns ± 3%  |
+![Benchmarks](docs/gnum.png)
+![Benchmarks](docs/go-enum.png)
+![Benchmarks](docs/enumer.png)
 
 ## Getting Started
 
@@ -36,12 +32,16 @@ go get github.com/joelboim/gnum
 First lets declare an enum type:
 
 ```go
-package main
+package enums
 
 import "github.com/joelboim/gnum"
 
 type (
-	Color = gnum.Enum[color]
+	Color = gnum.Enum[struct {
+		Red,
+		Blue,
+		Green color
+	}]
 	color int
 )
 
@@ -50,36 +50,27 @@ const (
 	Blue
 	Green
 )
-
-var config = gnum.NewConfig(
-	map[string]Color{
-		"red":   Red,
-		"Blue":  Blue,
-		"GREEN": Green,
-	})
-
-func (color) Config() *gnum.Config { return config }
 ```
 
 Now we can use it like other languages Enums:
 
 ```go 
 func main() {
-	fmt.Println(Red, Blue, Green) // red Blue GREEN
+	fmt.Println(Red, Blue, Green) // Red Blue Green
 
-	fmt.Println(gnum.Names[Color]()) // [red Blue GREEN]
+	fmt.Println(gnum.Names[Color]()) // [Red Blue Green]
 
-	fmt.Println(fmt.Sprintf("%T", gnum.Enums[Color]())) // []gnum.Enum[gnum.color]
+	fmt.Println(fmt.Sprintf("%T", gnum.Enums[Color]())) // []gnum.Enum[struct { Red main.color; Blue main.color; Green main.color }]
 
-	red, _ := gnum.Parse[Color]("red")
-	fmt.Println(red) // red
+	_, err := gnum.Parse[Color]("red")
+	fmt.Println(err) // error
 
 	colorJson, _ := json.Marshal(struct{ Color Color }{Blue})
 	fmt.Println(string(colorJson)) // {"Color":"Blue"}
 }
 ```
 
-Can be also used in a generic context:
+Can be also used as generic type:
 
 ```go
 func foo[T gnum.Enumer[T]](enum T) {
@@ -89,8 +80,21 @@ func foo[T gnum.Enumer[T]](enum T) {
 }
 
 func main() {
-	foo(Dog) // [dog cat cow] animal
-	foo(Red) // [red Blue GREEN] color
+    foo(Red)    // [dog cat cow] animal
+    foo(Square) // [Square] shape
 }
 ```
 
+If you need to customize elements of the enum you can do it with tags:
+
+```go
+type (
+	Color = gnum.Enum[struct {
+		Red    color
+		Blue   color `gnum:"value=3,name=b_l_u_e"`
+		Green  color
+		Yellow color
+	}]
+	color int
+)
+```

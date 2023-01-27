@@ -14,21 +14,15 @@ const (
 	chicken testAnimal = -1
 )
 
-var testAnimalConfig = NewConfig(
-	map[string]testAnimal{
-		"Dog":       dog,
-		"Cat":       cat,
-		"Cow":       cow,
-		"Chic\tken": chicken},
+type (
+	testAnimal = Enum[struct {
+		Dog,
+		Cat,
+		Cow animal
+		Chicken animal `gnum:"value=-1,name=Chic	ken"`
+	}]
+	animal int
 )
-
-type animal int
-
-type testAnimal = Enum[animal]
-
-func (animal) Config() *Config {
-	return testAnimalConfig
-}
 
 func TestReceiverString_OnDefaultConfig_ThenReturnString(t *testing.T) {
 	// Arrange
@@ -146,7 +140,7 @@ func TestReceiverUnmarshalText_OnDefaultConfig_ThenReturnName(t *testing.T) {
 	assert.Equal(t, dog, *actualEnum)
 }
 
-func TestReceiverUnmarshalText_OnMarshelText_ThenReturnEnum(t *testing.T) {
+func TestReceiverUnmarshalText_OnMarshalText_ThenReturnEnum(t *testing.T) {
 	// Arrange
 	enumMarsheled, err := dog.MarshalText()
 	require.NoError(t, err)

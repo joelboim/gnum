@@ -5,7 +5,6 @@ package gnum
 // while preserving the original Enum type (T)
 type Enumer[T ~int] interface {
 	~int
-	Config() *Config
 	Enums() []T
 	Name() string
 	Names() []string
