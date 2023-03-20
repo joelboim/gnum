@@ -201,6 +201,27 @@ func (s *enumMetadataTestSuite) TestReceiverEnums_OnCustomEnumMetadataAndMultipl
 	assert.Equal(s.T(), []testColor{green, red, blue, yellow}, actualEnums)
 }
 
+func (s *enumMetadataTestSuite) TestReceiverEnums_OnMultipleCustomEnumNames_ThenReturnAll() {
+	// Arrange
+	type (
+		color_ int
+		enum   = Enum[struct {
+			Red    color_ `gnum:"name=r_e_d"`
+			Blue   color_
+			Green  color_ `gnum:"name=g_r_e_e_n"`
+			Yellow color_
+		}]
+	)
+
+	red_ := enum(0)
+
+	// Act
+	actualEnums := red_.Enums()
+
+	// Assert
+	assert.Equal(s.T(), []enum{enum(0), enum(1), enum(2), enum(3)}, actualEnums)
+}
+
 func (s *enumMetadataTestSuite) TestReceiverMarshalText_OnCustomEnumMetadata_ThenReturnName() {
 	// Arrange
 	// Act

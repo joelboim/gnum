@@ -125,12 +125,14 @@ func getEnumNameToEnumValue[T any]() map[string]int {
 			panic(fmt.Sprintf("duplicate enum name - `%s`", enumName))
 		}
 
-		enumValue := infra.GetPointerValue(
-			enumTag.Value,
-			nextEnumValue)
-		enumNameToEnumValue[enumName] = enumValue
+		if enumTag.Value == nil {
+			enumNameToEnumValue[enumName] = nextEnumValue
+			nextEnumValue += 1
+			continue
+		}
 
-		nextEnumValue += enumValue
+		enumNameToEnumValue[enumName] = *enumTag.Value
+		nextEnumValue += *enumTag.Value
 	}
 
 	return enumNameToEnumValue
