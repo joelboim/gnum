@@ -80,7 +80,7 @@ func foo[T gnum.Enumer[T]](enum T) {
 }
 
 func main() {
-    foo(Red)    // [dog cat cow] animal
+    foo(Red)    // [red blue green] color
     foo(Square) // [Square] shape
 }
 ```

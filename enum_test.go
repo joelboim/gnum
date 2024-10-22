@@ -187,3 +187,12 @@ func TestReceiverType_OnEnumWithUnderlineNamedType_ThenReturnTypeName(t *testing
 	// Assert
 	assert.Equal(t, "animal", actualType)
 }
+
+func TestReceiverValues_OnDefaultConfig_ThenReturnInts(t *testing.T) {
+	// Arrange
+	actualEnum := new(testAnimal)
+
+	// Act
+	// Assert
+	assert.Equal(t, []int{-1, 0, 1, 2}, actualEnum.Values())
+}

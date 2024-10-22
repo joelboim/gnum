@@ -101,6 +101,11 @@ func (e Enum[T]) Type() string {
 	return reflect.TypeOf(*new(T)).Field(0).Type.Name()
 }
 
+// Values returns all the Enum[T] int representations sorted by the enum values.
+func (e Enum[T]) Values() []int {
+	return e.getConfig().sortedEnumValues
+}
+
 func (e Enum[T]) getConfig() *enumMetadata {
 	enumType := reflect.TypeOf(e)
 	if config_, ok := cache.Get(enumType); ok {

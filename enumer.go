@@ -12,6 +12,7 @@ type Enumer[T ~int] interface {
 	String() string
 	Strings() []string
 	Type() string
+	Values() []int
 }
 
 // Enums is a static function to handel all enums that implements Enumer[T] interface.
@@ -48,4 +49,10 @@ func Strings[T Enumer[T]]() []string {
 // It returns the underline type name.
 func Type[T Enumer[T]]() string {
 	return T.Type(-1)
+}
+
+// Values is a static function to handel all enums that implements Enumer[T] interface.
+// It returns a list of all Enum[T] ints.
+func Values[T Enumer[T]]() []int {
+	return T.Values(-1)
 }

@@ -60,3 +60,10 @@ func TestType_OnEnumWithUnderlineNamedType_ThenReturnTypeName(t *testing.T) {
 	// Assert
 	assert.Equal(t, "animal", actualType)
 }
+
+func TestValues_OnMultipleEnums_ThenReturnInts(t *testing.T) {
+	// Arrange
+	// Act
+	// Assert
+	assert.Equal(t, []int{-1, 0, 1, 2}, Values[testAnimal]())
+}

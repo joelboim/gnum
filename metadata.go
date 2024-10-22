@@ -34,6 +34,8 @@ func SetOptions(options ...Option) {
 	for _, option := range options {
 		option(globalConfig)
 	}
+
+	cache = newEnumCache()
 }
 
 // StringCallback will be applied for each Enum.String call and Enum.Strings.
